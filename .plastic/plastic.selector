@@ -1,0 +1,4 @@
+repository "Doggone_Treasure_Hunting/Doggone_Treasure_Hunting@20067639843532@cloud"
+  path "/"
+    br "/main"
+    co "/main"
