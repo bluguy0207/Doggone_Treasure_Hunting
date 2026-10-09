@@ -1,20 +1,55 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using NUnit.Framework;
 
 public class NPC : MonoBehaviour, IInteractable
 {
+    [Header("Dialogue Settings")]
     public NPCDialogue dialogueData;
     public GameObject dialoguePanel;
-    public TMP_Text dialogueText, nameText;
-
+    public TMP_Text dialogueText;
+    public TMP_Text nameText;
     public Image portraitImage;
 
+    [Header("Optional Crow Quest Dialogue")]
+    public bool isCrowQuestNPC;
+
+    [TextArea(2, 4)]
+    public string[] noCoinsDialogue;
+
+    [TextArea(2, 4)]
+    public string[] someCoinsDialogue;
+
+    [TextArea(2, 4)]
+    public string[] rewardDialogue;
+
+    [TextArea(2, 4)]
+    public string[] alreadyRewardedDialogue;
+
+    [Header("Key Reward")]
+    public string keyItemID = "CrowKey";
+    public string keyItemName = "Crow's Key";
+    public Sprite keyItemIcon;
+
     private int dialogueindex;
-    private bool isTyping, isDialogueActive;
+    private bool isTyping;
+    private bool isDialogueActive;
+    private bool rewardPending;
+
+    private string[] activeDialogueLines;
+    private AudioSource voiceAudioSource;
+
+    private void Awake()
+    {
+        voiceAudioSource = GetComponent<AudioSource>();
+
+        if (voiceAudioSource == null)
+            voiceAudioSource = gameObject.AddComponent<AudioSource>();
+
+        voiceAudioSource.playOnAwake = false;
+        voiceAudioSource.loop = false;
+    }
 
     public bool CanInteract()
     {
@@ -23,8 +58,8 @@ public class NPC : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        //If no dialogue data or the game is pasued and no dialogue is active
-        if (dialogueData == null || (PauseController.IsGamePaused && !isDialogueActive))
+        if (dialogueData == null ||
+            (PauseController.IsGamePaused && !isDialogueActive))
             return;
 
         if (isDialogueActive)
@@ -37,8 +72,62 @@ public class NPC : MonoBehaviour, IInteractable
         }
     }
 
-    void StartDialogue()
+    private void StartDialogue()
     {
+        activeDialogueLines = dialogueData.dialogueLines;
+        rewardPending = false;
+
+
+        if (isCrowQuestNPC)
+        {
+            QuestController quest = QuestController.Instance;
+
+            if (quest == null)
+            {
+                Debug.LogError("Could not find QuestController!");
+                return;
+            }
+
+            CoinsCollected counter = quest.coinCounter;
+
+            if (counter == null)
+            {
+                Debug.LogError(
+                    "QuestController's Coin Counter is not assigned!"
+                );
+                return;
+            }
+
+            Debug.Log("Crow's counter object: " + counter.gameObject.name
+                + " | Coins: " + counter.coins);
+
+            if (quest.HasCrowKeyReward())
+            {
+                activeDialogueLines = alreadyRewardedDialogue;
+            }
+            else if (counter.coins >= 3)
+            {
+                activeDialogueLines = rewardDialogue;
+                rewardPending = true;
+            }
+            // else if (counter.coins > 0)
+            // {
+            //     activeDialogueLines = someCoinsDialogue;
+            // }
+            else
+            {
+                activeDialogueLines = noCoinsDialogue;
+            }
+        }
+
+
+        if (activeDialogueLines == null ||
+            activeDialogueLines.Length == 0)
+        {
+            Debug.LogWarning("This NPC has no dialogue lines assigned.");
+            return;
+        }
+
         isDialogueActive = true;
         dialogueindex = 0;
 
@@ -51,18 +140,16 @@ public class NPC : MonoBehaviour, IInteractable
         StartCoroutine(TypeLine());
     }
 
-    void NextLine()
+    private void NextLine()
     {
         if (isTyping)
         {
             StopAllCoroutines();
-            dialogueText.SetText(dialogueData.dialogueLines[dialogueindex]);
+            dialogueText.SetText(activeDialogueLines[dialogueindex]);
             isTyping = false;
         }
-
-        else if (++dialogueindex < dialogueData.dialogueLines.Length)
+        else if (++dialogueindex < activeDialogueLines.Length)
         {
-            //If another line, type next line
             StartCoroutine(TypeLine());
         }
         else
@@ -71,20 +158,33 @@ public class NPC : MonoBehaviour, IInteractable
         }
     }
 
-    IEnumerator TypeLine()
+    private IEnumerator TypeLine()
     {
         isTyping = true;
         dialogueText.SetText("");
 
-        foreach(char letter in dialogueData.dialogueLines[dialogueindex])
+        string line = activeDialogueLines[dialogueindex];
+
+        foreach (char letter in line)
         {
             dialogueText.text += letter;
+
+            if (!char.IsWhiteSpace(letter) &&
+                dialogueData.voiceSound != null)
+            {
+                voiceAudioSource.Stop();
+                voiceAudioSource.pitch = dialogueData.voicePitch;
+                voiceAudioSource.PlayOneShot(dialogueData.voiceSound);
+            }
+
             yield return new WaitForSeconds(dialogueData.typingSpeed);
         }
 
         isTyping = false;
 
-        if(dialogueData.autoProgressLines.Length > dialogueindex && dialogueData.autoProgressLines[dialogueindex])
+        if (dialogueData.autoProgressLines != null &&
+            dialogueData.autoProgressLines.Length > dialogueindex &&
+            dialogueData.autoProgressLines[dialogueindex])
         {
             yield return new WaitForSeconds(dialogueData.autoProgressDelay);
             NextLine();
@@ -94,7 +194,24 @@ public class NPC : MonoBehaviour, IInteractable
     public void EndDialogue()
     {
         StopAllCoroutines();
+
+        isTyping = false;
         isDialogueActive = false;
+
+        if (rewardPending)
+        {
+            QuestController quest = QuestController.Instance;
+
+            if (quest != null && !quest.GiveCrowKey())
+            {
+                Debug.LogWarning(
+                    "The key could not be added. Check inventory space and key settings."
+                );
+            }
+
+            rewardPending = false;
+        }
+
         dialogueText.SetText("");
         dialoguePanel.SetActive(false);
         PauseController.SetPause(false);

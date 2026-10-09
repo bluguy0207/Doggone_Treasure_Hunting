@@ -15,10 +15,10 @@ MonoBehaviour:
   npcName: Crow
   npcPortrait: {fileID: -2016446289307136793, guid: f16d0823b531eb24d927cd9709318d4f, type: 3}
   dialogueLines:
-  - Ooh.. So you want to learn about the treasure, huh?
-  - I may be able to help you, if you bring me five gold coins!
+  - 'Ooh.. So you want to learn '
+  - I may be able to help you, if you bring me three gold coins!
   autoProgressLines: 
   autoProgressDelay: 1.5
-  typingSpeed: 0.025
-  voiceSound: {fileID: 0}
+  typingSpeed: 0.04
+  voiceSound: {fileID: 8300000, guid: 9b023640698970645ac0d3d244155b1d, type: 3}
   voicePitch: 1

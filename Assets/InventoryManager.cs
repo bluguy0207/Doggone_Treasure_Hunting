@@ -84,11 +84,48 @@ public class InventoryManager : MonoBehaviour
             }
 
             if (i < collectedItems.Count)
+            {
+                Debug.Log(
+                    "Inventory slot " + i +
+                    " receives: " + collectedItems[i].itemName
+                );
+
                 slots[i].SetItem(collectedItems[i], this);
+            }
             else
+            {
                 slots[i].ClearSlot();
+            }
         }
     }
+
+public bool AddItemReward(
+    string itemID,
+    string itemName,
+    Sprite itemIcon)
+{
+    if (collectedItems.Exists(x => x.itemID == itemID))
+        return false;
+
+    if (slots == null || collectedItems.Count >= slots.Length)
+    {
+        Debug.LogWarning("Inventory is full! Key reward not added.");
+        return false;
+    }
+
+    InventoryItemData data = new InventoryItemData
+    {
+        itemID = itemID,
+        itemName = itemName,
+        itemIcon = itemIcon
+    };
+
+    collectedItems.Add(data);
+    RefreshInventory();
+
+    return true;
+}
+
 }
 
 [System.Serializable]

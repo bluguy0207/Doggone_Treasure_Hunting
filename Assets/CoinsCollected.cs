@@ -14,6 +14,7 @@ public class CoinsCollected : MonoBehaviour
     public void AddCoin()
     {
         coins++;
+        Debug.Log("Coins variable is now: " + coins);
         UpdateCoinsText();
     }
 

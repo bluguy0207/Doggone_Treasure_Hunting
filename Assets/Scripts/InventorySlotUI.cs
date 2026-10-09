@@ -27,6 +27,12 @@ public class InventorySlotUI : MonoBehaviour
             return;
         }
 
+        Debug.Log(
+            name + " displays " + item.itemName +
+            " using Image: " + itemIcon.name +
+            " under " + itemIcon.transform.parent.name
+        );
+
         itemIcon.sprite = item.itemIcon;
         itemIcon.enabled = item.itemIcon != null;
         itemIcon.preserveAspect = true;

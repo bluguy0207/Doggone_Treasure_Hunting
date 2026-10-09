@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 public class CoinPickup : MonoBehaviour
@@ -7,7 +8,7 @@ public class CoinPickup : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        // Search for the coin counter, including inactive UI objects.
+        // Find the coin counter in this scene.
         CoinsCollected[] counters =
             Resources.FindObjectsOfTypeAll<CoinsCollected>();
 
@@ -18,6 +19,7 @@ public class CoinPickup : MonoBehaviour
             if (counter.gameObject.scene == gameObject.scene)
             {
                 coinCounter = counter;
+                Debug.Log("Selected coin counter: " + counter.gameObject.name);
                 break;
             }
         }
@@ -25,6 +27,10 @@ public class CoinPickup : MonoBehaviour
         if (coinCounter != null)
         {
             coinCounter.AddCoin();
+
+            Debug.Log("Coin pickup updated: "
+                + coinCounter.gameObject.name
+                + " | Coins: " + coinCounter.coins);
 
             if (KujoAudio.Instance != null)
             {
@@ -35,7 +41,9 @@ public class CoinPickup : MonoBehaviour
         }
         else
         {
-            Debug.LogError("CoinsCollected was not found in this scene!");
+            Debug.LogError(
+                "CoinsCollected was not found in this scene!"
+            );
         }
     }
 }
