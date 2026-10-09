@@ -1,60 +1,89 @@
-
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class InventoryManager : MonoBehaviour
 {
-    public List<KeyItemData> items = new List<KeyItemData>();
-
+    [Header("Inventory UI")]
     public InventorySlotUI[] slots;
-    public TMP_Text itemNameText;
-    public TMP_Text itemDescriptionText;
+
+    private readonly List<InventoryItemData> collectedItems =
+        new List<InventoryItemData>();
+
+    private void Start()
+    {
+        RefreshInventory();
+    }
 
     public void AddItem(KeyItem item)
     {
-        // Don't collect the same unique item twice.
-        if (items.Exists(x => x.itemID == item.itemID))
+        if (item == null)
             return;
 
-        KeyItemData data = new KeyItemData();
-        data.itemID = item.itemID;
-        data.itemName = item.itemName;
-        data.description = item.description;
+        // Prevent collecting the same item twice.
+        if (collectedItems.Exists(x => x.itemID == item.itemID))
+        {
+            Destroy(item.gameObject);
+            return;
+        }
 
-        items.Add(data);
+        // Make sure there is room in the inventory.
+        if (slots == null || collectedItems.Count >= slots.Length)
+        {
+            Debug.LogWarning("Inventory is full!");
+            return;
+        }
+
+        // Save the item's information.
+        InventoryItemData data = new InventoryItemData
+        {
+            itemID = item.itemID,
+            itemName = item.itemName,
+            itemIcon = item.itemIcon
+        };
+
+        collectedItems.Add(data);
+
+        // Update the inventory UI.
         RefreshInventory();
 
+        // Remove the collected object from the scene.
         Destroy(item.gameObject);
     }
 
     public void RefreshInventory()
     {
+        if (slots == null)
+        {
+            Debug.LogError("InventoryManager: Slots array is not assigned.");
+            return;
+        }
+
         for (int i = 0; i < slots.Length; i++)
         {
-            if (i < items.Count)
-                slots[i].SetItem(items[i], this);
+            if (slots[i] == null)
+            {
+                Debug.LogError(
+                    "InventoryManager: Slot " + i + " is not assigned."
+                );
+                continue;
+            }
+
+            if (i < collectedItems.Count)
+            {
+                slots[i].SetItem(collectedItems[i], this);
+            }
             else
+            {
                 slots[i].ClearSlot();
+            }
         }
-    }
-
-    public void SelectItem(KeyItemData item)
-    {
-        itemNameText.text = item.itemName;
-        itemDescriptionText.text = item.description;
-    }
-
-    public bool HasItem(string id)
-    {
-        return items.Exists(x => x.itemID == id);
     }
 }
 
 [System.Serializable]
-public class KeyItemData
+public class InventoryItemData
 {
     public string itemID;
     public string itemName;
-    public string description;
+    public Sprite itemIcon;
 }

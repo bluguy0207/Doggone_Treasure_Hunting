@@ -21,14 +21,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (PauseController.IsGamePaused)
+        {
+            rb.linearVelocity = Vector2.zero; //Stop movement
+            animator.SetBool("IsWalking", false);
+            return;
+        }
         rb.linearVelocity = moveInput * moveSpeed;
+        animator.SetBool("IsWalking", rb.linearVelocity.magnitude > 0);
     }
 
     public void Move(InputAction.CallbackContext context)
     {
-        animator.SetBool("IsWalking", true);
         
-        if (context.canceled)
+        //Debug.Log($"Move called: {context.ReadValue<Vector2>()} (phase: {context.phase})");
+        //if (context.canceled)
         {
             animator.SetBool("IsWalking", false);
             animator.SetFloat("LastInputX", moveInput.x);

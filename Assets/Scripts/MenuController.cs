@@ -15,7 +15,12 @@ public class MenuController : MonoBehaviour
     {
         if (Keyboard.current != null && (Keyboard.current.tabKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame))
         {
+            if (!menuCanvas.activeSelf && PauseController.IsGamePaused)
+            {
+                return;
+            }
             menuCanvas.SetActive(!menuCanvas.activeSelf);
+            PauseController.SetPause(menuCanvas.activeSelf);
         }
 
     }
