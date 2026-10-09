@@ -126,6 +126,26 @@ public bool AddItemReward(
     return true;
 }
 
+
+public bool HasItem(string itemID)
+{
+    return collectedItems.Exists(x => x.itemID == itemID);
+}
+
+public bool RemoveItem(string itemID)
+{
+    int index = collectedItems.FindIndex(x => x.itemID == itemID);
+
+    if (index == -1)
+        return false;
+
+    collectedItems.RemoveAt(index);
+    RefreshInventory();
+
+    return true;
+}
+
+
 }
 
 [System.Serializable]

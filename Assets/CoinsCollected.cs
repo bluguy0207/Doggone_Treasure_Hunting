@@ -18,6 +18,16 @@ public class CoinsCollected : MonoBehaviour
         UpdateCoinsText();
     }
 
+    public bool SpendCoins(int amount)
+    {
+        if (amount < 0 || coins < amount)
+            return false;
+
+        coins -= amount;
+        UpdateCoinsText();
+        return true;
+    }
+
     void UpdateCoinsText()
     {
         coinsText.text = "Coins: " + coins;

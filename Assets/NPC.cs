@@ -1,3 +1,4 @@
+
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -12,22 +13,48 @@ public class NPC : MonoBehaviour, IInteractable
     public TMP_Text nameText;
     public Image portraitImage;
 
-    [Header("Optional Crow Quest Dialogue")]
+    [Header("Optional Crow Quest")]
     public bool isCrowQuestNPC;
 
     [TextArea(2, 4)]
     public string[] noCoinsDialogue;
-
     [TextArea(2, 4)]
     public string[] someCoinsDialogue;
-
     [TextArea(2, 4)]
     public string[] rewardDialogue;
-
     [TextArea(2, 4)]
     public string[] alreadyRewardedDialogue;
 
-    [Header("Key Reward")]
+    [Header("Optional Cat Clover Quest")]
+    public bool isCatQuestNPC;
+
+    [TextArea(2, 4)]
+    public string[] catNoCloverDialogue;
+    [TextArea(2, 4)]
+    public string[] catTradeDialogue;
+    [TextArea(2, 4)]
+    public string[] catCompletedDialogue;
+
+    public string cloverItemID = "clover";
+
+    [Header("Optional Bus Ticket Event")]
+    public bool isBusTicketNPC;
+
+    [TextArea(2, 4)]
+    public string[] busTicketMissingDialogue;
+
+    [TextArea(2, 4)]
+    public string[] busTicketReturnDialogue;
+
+    [TextArea(2, 4)]
+    public string[] busTicketCompletedDialogue;
+
+    public string busTicketItemID = "BusTicket";
+
+    private bool busTicketEventCompleted;
+    private bool busTicketRewardPending;
+
+    [Header("Key Reward (Legacy Settings)")]
     public string keyItemID = "CrowKey";
     public string keyItemName = "Crow's Key";
     public Sprite keyItemIcon;
@@ -36,6 +63,7 @@ public class NPC : MonoBehaviour, IInteractable
     private bool isTyping;
     private bool isDialogueActive;
     private bool rewardPending;
+    private bool catRewardPending;
 
     private string[] activeDialogueLines;
     private AudioSource voiceAudioSource;
@@ -76,50 +104,84 @@ public class NPC : MonoBehaviour, IInteractable
     {
         activeDialogueLines = dialogueData.dialogueLines;
         rewardPending = false;
-
+        catRewardPending = false;
+        busTicketRewardPending = false;
 
         if (isCrowQuestNPC)
         {
             QuestController quest = QuestController.Instance;
 
-            if (quest == null)
-            {
-                Debug.LogError("Could not find QuestController!");
-                return;
-            }
-
-            CoinsCollected counter = quest.coinCounter;
-
-            if (counter == null)
+            if (quest == null || quest.coinCounter == null)
             {
                 Debug.LogError(
-                    "QuestController's Coin Counter is not assigned!"
+                    "Crow quest: QuestController or Coin Counter is missing!"
                 );
                 return;
             }
 
-            Debug.Log("Crow's counter object: " + counter.gameObject.name
-                + " | Coins: " + counter.coins);
-
             if (quest.HasCrowKeyReward())
-            {
                 activeDialogueLines = alreadyRewardedDialogue;
-            }
-            else if (counter.coins >= 3)
+            else if (quest.coinCounter.coins >= 3)
             {
                 activeDialogueLines = rewardDialogue;
                 rewardPending = true;
             }
-            // else if (counter.coins > 0)
-            // {
-            //     activeDialogueLines = someCoinsDialogue;
-            // }
+            else if (quest.coinCounter.coins > 0 &&
+                     someCoinsDialogue != null &&
+                     someCoinsDialogue.Length > 0)
+                activeDialogueLines = someCoinsDialogue;
             else
-            {
                 activeDialogueLines = noCoinsDialogue;
-            }
         }
 
+        if (isCatQuestNPC)
+        {
+            QuestController quest = QuestController.Instance;
+
+            if (quest == null || quest.inventory == null)
+            {
+                Debug.LogError(
+                    "Cat quest: QuestController or Inventory is missing!"
+                );
+                return;
+            }
+
+            if (quest.catCloverQuestCompleted)
+                activeDialogueLines = catCompletedDialogue;
+            else if (quest.inventory.HasItem(cloverItemID))
+            {
+                activeDialogueLines = catTradeDialogue;
+                catRewardPending = true;
+            }
+            else
+                activeDialogueLines = catNoCloverDialogue;
+        }
+
+        if (isBusTicketNPC)
+        {
+            QuestController quest = QuestController.Instance;
+
+            if (busTicketEventCompleted)
+            {
+                activeDialogueLines = busTicketCompletedDialogue;
+            }
+            else if (quest == null || quest.inventory == null)
+            {
+                Debug.LogError(
+                    "Bus ticket event: QuestController or Inventory is missing!"
+                );
+                return;
+            }
+            else if (quest.inventory.HasItem(busTicketItemID))
+            {
+                activeDialogueLines = busTicketReturnDialogue;
+                busTicketRewardPending = true;
+            }
+            else
+            {
+                activeDialogueLines = busTicketMissingDialogue;
+            }
+        }
 
         if (activeDialogueLines == null ||
             activeDialogueLines.Length == 0)
@@ -186,7 +248,9 @@ public class NPC : MonoBehaviour, IInteractable
             dialogueData.autoProgressLines.Length > dialogueindex &&
             dialogueData.autoProgressLines[dialogueindex])
         {
-            yield return new WaitForSeconds(dialogueData.autoProgressDelay);
+            yield return new WaitForSeconds(
+                dialogueData.autoProgressDelay
+            );
             NextLine();
         }
     }
@@ -198,14 +262,60 @@ public class NPC : MonoBehaviour, IInteractable
         isTyping = false;
         isDialogueActive = false;
 
+        QuestController quest = QuestController.Instance;
+
+        if (busTicketRewardPending)
+        {
+            if (quest != null &&
+                quest.inventory != null &&
+                quest.coinCounter != null &&
+                quest.inventory.RemoveItem(busTicketItemID))
+            {
+                quest.coinCounter.AddCoin();
+                busTicketEventCompleted = true;
+
+                Debug.Log(
+                    "Bus ticket returned! Kujo received one coin."
+                );
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "Bus ticket trade failed. Check the inventory, " +
+                    "coin counter, and ticket ID."
+                );
+            }
+
+            busTicketRewardPending = false;
+        }
+
+        if (catRewardPending)
+        {
+            if (quest != null &&
+                quest.inventory != null &&
+                quest.coinCounter != null)
+            {
+                if (!quest.catCloverQuestCompleted &&
+                    quest.inventory.RemoveItem(cloverItemID))
+                {
+                    quest.coinCounter.AddCoin();
+                    quest.catCloverQuestCompleted = true;
+                }
+                else
+                {
+                    Debug.LogWarning("Cat Clover trade failed.");
+                }
+            }
+
+            catRewardPending = false;
+        }
+
         if (rewardPending)
         {
-            QuestController quest = QuestController.Instance;
-
             if (quest != null && !quest.GiveCrowKey())
             {
                 Debug.LogWarning(
-                    "The key could not be added. Check inventory space and key settings."
+                    "The Golden Key could not be added."
                 );
             }
 
@@ -215,5 +325,14 @@ public class NPC : MonoBehaviour, IInteractable
         dialogueText.SetText("");
         dialoguePanel.SetActive(false);
         PauseController.SetPause(false);
+    }
+
+    public void StartBusTicketEvent()
+    {
+        if (!isBusTicketNPC || isDialogueActive ||
+            busTicketEventCompleted)
+            return;
+
+        Interact();
     }
 }

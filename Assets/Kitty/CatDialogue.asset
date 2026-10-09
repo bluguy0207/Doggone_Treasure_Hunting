@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22891c8762a71a14bbb266d2a613b222, type: 3}
+  m_Name: CatDialogue
+  m_EditorClassIdentifier: Assembly-CSharp::NPCDialogue
+  npcName: Kitty
+  npcPortrait: {fileID: -3693028216693359592, guid: 90295fb5516bd484b900a64a498414e3, type: 3}
+  dialogueLines: []
+  autoProgressLines: 
+  autoProgressDelay: 1.5
+  typingSpeed: 0.04
+  voiceSound: {fileID: 8300000, guid: 9b023640698970645ac0d3d244155b1d, type: 3}
+  voicePitch: 1
