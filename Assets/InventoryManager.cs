@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,6 +6,9 @@ public class InventoryManager : MonoBehaviour
 {
     [Header("Inventory UI")]
     public InventorySlotUI[] slots;
+
+    [Header("Pickup Sound")]
+    public AudioSource pickupAudioSource;
 
     private readonly List<InventoryItemData> collectedItems =
         new List<InventoryItemData>();
@@ -43,6 +47,14 @@ public class InventoryManager : MonoBehaviour
 
         collectedItems.Add(data);
 
+        // Play the pickup sound once.
+        if (pickupAudioSource != null)
+        {
+            pickupAudioSource.PlayOneShot(
+                pickupAudioSource.clip
+            );
+        }
+
         // Update the inventory UI.
         RefreshInventory();
 
@@ -54,7 +66,9 @@ public class InventoryManager : MonoBehaviour
     {
         if (slots == null)
         {
-            Debug.LogError("InventoryManager: Slots array is not assigned.");
+            Debug.LogError(
+                "InventoryManager: Slots array is not assigned."
+            );
             return;
         }
 
@@ -63,19 +77,16 @@ public class InventoryManager : MonoBehaviour
             if (slots[i] == null)
             {
                 Debug.LogError(
-                    "InventoryManager: Slot " + i + " is not assigned."
+                    "InventoryManager: Slot " + i +
+                    " is not assigned."
                 );
                 continue;
             }
 
             if (i < collectedItems.Count)
-            {
                 slots[i].SetItem(collectedItems[i], this);
-            }
             else
-            {
                 slots[i].ClearSlot();
-            }
         }
     }
 }
