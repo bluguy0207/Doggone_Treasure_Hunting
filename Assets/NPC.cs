@@ -271,6 +271,7 @@ public class NPC : MonoBehaviour, IInteractable
                 quest.coinCounter != null &&
                 quest.inventory.RemoveItem(busTicketItemID))
             {
+                KujoAudio.Instance.Bark();
                 quest.coinCounter.AddCoin();
                 busTicketEventCompleted = true;
 
@@ -300,6 +301,7 @@ public class NPC : MonoBehaviour, IInteractable
                 {
                     quest.coinCounter.AddCoin();
                     quest.catCloverQuestCompleted = true;
+                    KujoAudio.Instance.Bark();
                 }
                 else
                 {

@@ -73,6 +73,7 @@ public class QuestController : MonoBehaviour
         }
 
         crowKeyRewardClaimed = true;
+        KujoAudio.Instance.Bark();
         return true;
     }
 }
