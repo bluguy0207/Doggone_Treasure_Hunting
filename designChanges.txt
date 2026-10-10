@@ -26,4 +26,4 @@ The game remains a top-down adventure starring Kujo, with pixel-art visuals, fou
 Overall, these changes helped me prioritize functional gameplay, manageable scope, and a complete ending rather than attempting to build more content than I could finish in time. 
   The project still follows the original concept, but its progression and quest structure evolved during implementation.
 
-  Upon more reflection, I vastly overestimated what I could get done in a short amount of time, hopefully this final project isn't too short.
+Upon reflection, I overestimated how much I could complete in a limited amount of time. I focused on finishing the core gameplay mechanics and creating a complete ending rather than adding features I couldn't fully implement.
