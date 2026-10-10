@@ -1,0 +1,29 @@
+Doggone Treasure Hunting! — Design Changes
+
+My original plan for *Doggone Treasure Hunting!* was a top-down pixel-art adventure about Kujo, 
+  a young Rottweiler who searches for buried treasure to help his injured owner pay their medical bills. 
+  I wanted three small areas, digging mechanics, a few NPCs, coin-based upgrades, and a final treasure chest.
+
+During development, I kept the central idea and story goal the same but simplified the game's scope so I could focus on completing the main gameplay loop.
+
+**Changes from the original design:**
+
+- **Smaller game world:** The original plan called for three distinct areas that gradually led to the treasure. 
+    I simplified the level design and focused on a smaller playable environment rather than creating three fully developed areas.
+- **Changed progression system:** Originally, coins were mainly intended for simple upgrades. 
+    I instead used coins as part of NPC quests, including a crow who trades the Golden Key for three coins.
+- **More structured item-based quests:** I added an inventory system for key items and quests involving NPCs. 
+    For example, the cat accepts a Clover in exchange for a coin, while another character's lost bus ticket can be returned for a reward.
+- **Simplified the final treasure objective:** The original plan involved digging at specific locations throughout the game to find coins and useful items. 
+    The final objective instead focuses on finding the suspicious hole, revealing the treasure chest with the Golden Key, and opening it to complete the game.
+- **Simplified audio and presentation:** I focused on adding practical gameplay sound effects and a victory screen rather than attempting a more extensive soundtrack and presentation.
+
+**What stayed the same:**
+
+The game remains a top-down adventure starring Kujo, with pixel-art visuals, four-direction movement, interaction with characters and objects, 
+  collectible coins, key items, and a final treasure chest. The central motivation remains helping Kujo's owner, and the treasure hunt is still the main goal.
+
+Overall, these changes helped me prioritize functional gameplay, manageable scope, and a complete ending rather than attempting to build more content than I could finish in time. 
+  The project still follows the original concept, but its progression and quest structure evolved during implementation.
+
+Upon reflection, I overestimated how much I could complete in a limited amount of time. I focused on finishing the core gameplay mechanics and creating a complete ending rather than adding features I couldn't fully implement.
