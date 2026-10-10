@@ -51,6 +51,7 @@ public class TreasureChest : MonoBehaviour, IInteractable
         if (victoryScreen != null)
         {
             victoryScreen.SetActive(true);
+            KujoAudio.Instance.Bark();
             Debug.Log("Victory screen active: " + victoryScreen.activeSelf);
         }
         else

@@ -49,6 +49,7 @@ public class SuspiciousHole : MonoBehaviour, IInteractable
 
         treasureChest.SetActive(true);
         chestRevealed = true;
+        KujoAudio.Instance.Bark();
 
         Debug.Log("Kujo dug up the treasure chest!");
     }
