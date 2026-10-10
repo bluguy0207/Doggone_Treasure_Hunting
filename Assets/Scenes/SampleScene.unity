@@ -15278,6 +15278,7 @@ MonoBehaviour:
   - Sigh, I'm having a rough day. I wish my luck would turn around.
   catTradeDialogue:
   - Oh! A Four Leaf Clover! That will definitely make me lucky! Thank you!
+  - Have this gold coin!
   catCompletedDialogue:
   - Thank you and have a good day!
   cloverItemID: clover
@@ -17170,56 +17171,6 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
-  - first: {x: -11, y: 8, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 12
-      m_TileSpriteIndex: 12
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: -10, y: 8, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 12
-      m_TileSpriteIndex: 12
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: -9, y: 8, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 12
-      m_TileSpriteIndex: 12
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: -11, y: 9, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 12
-      m_TileSpriteIndex: 12
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
-  - first: {x: -9, y: 9, z: 0}
-    second:
-      serializedVersion: 2
-      m_TileIndex: 12
-      m_TileSpriteIndex: 12
-      m_TileMatrixIndex: 0
-      m_TileColorIndex: 0
-      m_TileObjectToInstantiateIndex: 65535
-      dummyAlignment: 0
-      m_AllTileFlags: 1073741825
   - first: {x: -11, y: 10, z: 0}
     second:
       serializedVersion: 2
@@ -17289,7 +17240,7 @@ Tilemap:
     m_RefCount: 1
     m_Data: {fileID: 11400000, guid: 86c950e7912eea34f97218b5ba44b4e6, type: 2}
   - serializedVersion: 2
-    m_RefCount: 11
+    m_RefCount: 6
     m_Data: {fileID: 11400000, guid: 621bd1dc780126942b2dfafeb5cc1aef, type: 2}
   m_TileSpriteArray:
   - serializedVersion: 2
@@ -17329,11 +17280,11 @@ Tilemap:
     m_RefCount: 1
     m_Data: {fileID: -749578430, guid: 1172dbb189e341b418efa22a84d0b52b, type: 3}
   - serializedVersion: 2
-    m_RefCount: 11
+    m_RefCount: 6
     m_Data: {fileID: -5537011384266318256, guid: 2b4b2ff552ceb7940826af5f2f4f8327, type: 3}
   m_TileMatrixArray:
   - serializedVersion: 2
-    m_RefCount: 23
+    m_RefCount: 18
     m_Data:
       e00: 1
       e01: 0
@@ -17353,7 +17304,7 @@ Tilemap:
       e33: 1
   m_TileColorArray:
   - serializedVersion: 2
-    m_RefCount: 23
+    m_RefCount: 18
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
@@ -19597,9 +19548,11 @@ MonoBehaviour:
   portraitImage: {fileID: 1289033131}
   isCrowQuestNPC: 1
   noCoinsDialogue:
-  - 'Hello Kinjo! Why the long face? Your owner is bankrupt! '
-  - He needs money, well lucky for you, I know about a treasure chest somehwere around
-    here.
+  - 'Hello Kinjo! Why the long face?  '
+  - ...
+  - Your owner is bankrupt!?
+  - So he needs money, well lucky for you, I know about a treasure chest somewhere
+    around here.
   - Ooh.. So you want to learn about the treasure, huh?
   - I may be able to help you, if you bring me three gold coins!
   someCoinsDialogue: []
@@ -19687,8 +19640,8 @@ MonoBehaviour:
   busTicketReturnDialogue:
   - What? Who is it? Oh a dog! you found my ticket! Thank you so much! Have some
     food!
-  - (Kinjo quickly eats the food and notices the person drop a gold coins, he takes
-    it after he goes back).
+  - (Kinjo quickly eats the food and notices the person drop a gold coin, he takes
+    it after the man goes back).
   busTicketCompletedDialogue:
   - (Kinjo hears the sound of someone packing their things).
   busTicketItemID: BusTicket

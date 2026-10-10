@@ -236,7 +236,7 @@ public class NPC : MonoBehaviour, IInteractable
             {
                 voiceAudioSource.Stop();
                 voiceAudioSource.pitch = dialogueData.voicePitch;
-                voiceAudioSource.PlayOneShot(dialogueData.voiceSound);
+                voiceAudioSource.PlayOneShot(dialogueData.voiceSound, 0.1f);
             }
 
             yield return new WaitForSeconds(dialogueData.typingSpeed);
